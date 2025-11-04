@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ASS-Projekt — Alkoholsucht</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg-1:#0f172a;
+  --accent:#06b6d4;
+  --accent-2:#0ea5a4;
+  --muted:#9aa4b2;
+  --card:#ffffff;
+}
+* { box-sizing:border-box; }
+html,body{
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  margin:0; height:100%;
+  background:linear-gradient(180deg,#07121a 0%, #081226 100%);
+  color:#e6eef6;
+}
+
+/* Hintergrund-Blobs */
+.bg-blob{ position:fixed; filter:blur(64px); opacity:0.45; z-index:0; pointer-events:none; }
+.b1{ left:-100px; top:-80px; width:460px; height:460px; border-radius:50%; background:linear-gradient(45deg,var(--accent),var(--accent-2)); animation:float1 10s ease-in-out infinite; }
+.b2{ right:-160px; bottom:-80px; width:620px; height:620px; border-radius:50%; background:linear-gradient(45deg,#7c3aed,var(--accent)); animation:float2 12s ease-in-out infinite; }
+@keyframes float1{0%{transform:translateY(0)}50%{transform:translateY(18px)}100%{transform:translateY(0)}}
+@keyframes float2{0%{transform:translateY(0)}50%{transform:translateY(-20px)}100%{transform:translateY(0)}}
+
+.container{ max-width:1100px; margin:0 auto; padding:28px; position:relative; z-index:10; }
+
+/* Login Overlay */
+#loginOverlay{ position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(2,6,23,0.86); backdrop-filter: blur(6px); z-index:100; }
+.loginCard{ width:min(560px,96%); border-radius:14px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06); padding:1.6rem; box-shadow:0 20px 60px rgba(2,6,23,0.5); }
+.login-header{ display:flex; gap:14px; align-items:center; }
+.login-logo{ width:64px; height:64px; border-radius:12px; display:flex; align-items:center; justify-content:center; background:linear-gradient(180deg,#fff,#f0fcff); }
+.login-title{ font-weight:700; font-size:1.2rem; color:#f8feff; }
+.form-row{ margin-top:12px; display:flex; gap:8px; align-items:center; }
+input{ padding:12px 14px; border-radius:10px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.03); color:#eaffff; width:100%; }
+.btn{ margin-top:12px; width:100%; padding:10px; border-radius:10px; border:0; font-weight:700; background:linear-gradient(90deg,var(--accent),#0891b2); color:#042b2f; cursor:pointer; }
+.err{ color:#ff8888; margin-top:8px; min-height:1.2em; }
+
+/* Header */
+.header{ display:flex; gap:16px; align-items:center; margin-bottom:18px; flex-wrap:wrap; }
+#siteLogo{ height:88px; width:auto; border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,0.4); }
+.title{ font-size:1.5rem; font-weight:700; color:#e6fbff; flex:1; }
+.header-actions{ display:flex; gap:10px; align-items:center; }
+.action-btn{ background:transparent; border:1px solid rgba(255,255,255,0.06); color:var(--muted); padding:8px 12px; border-radius:10px; cursor:pointer; }
+
+/* Hero – großes Plakat oben */
+.hero-banner{
+  position:relative;
+  overflow:hidden;
+  border-radius:16px;
+  margin-bottom:24px;
+  box-shadow:0 24px 80px rgba(0,0,0,0.5);
+}
+.hero-banner img{
+  width:100%;
+  height:auto;
+  max-height:700px;
+  object-fit:cover;
+  display:block;
+}
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 24px;
+  pointer-events: none;
+}
+.hero-overlay .hero-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  pointer-events: all;
+}
+.hero-overlay .action-btn {
+  background: rgba(255, 255, 255, 0.85);
+  color: #0f172a;
+  border: 1px solid rgba(0,0,0,0.1);
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+.hero-overlay .action-btn:hover {
+  background: rgba(255, 255, 255, 1);
+}
+
+/* Content Cards */
+.section-card{
+  background:var(--card);
+  color:#0f172a;
+  padding:18px;
+  border-radius:12px;
+  box-shadow:0 14px 40px rgba(2,6,23,0.08);
+  margin-bottom:18px;
+}
+
+/* Grid Ressourcen */
+.grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:18px; }
+.card-small{ background:var(--card); color:#0f172a; padding:12px; border-radius:10px; }
+.card-small h4{ margin:0 0 6px 0; }
+.card-small p{ margin:0; color:#475569; font-size:0.95rem; }
+
+/* Accordion */
+.accordion{ margin-top:18px; }
+.acc-item{ background:var(--card); border-radius:10px; margin-bottom:8px; overflow:hidden; }
+.acc-button{ width:100%; text-align:left; padding:12px 14px; background:transparent; border:0; font-weight:700; display:flex; justify-content:space-between; align-items:center; cursor:pointer; }
+.acc-panel{ max-height:0; overflow:hidden; transition:max-height 240ms ease; padding:0 14px; }
+.acc-panel p{ margin:12px 0; color:#475569; }
+
+/* Footer */
+footer{ margin-top:22px; color:var(--muted); text-align:center; font-size:0.92rem; }
+
+/* Suchfeld-spezifische Styles (sichtbarer Text auf heller Card) */
+#search{
+  color: #0f172a;
+  background: #f8fafc;
+  border: 1px solid rgba(2,6,23,0.06);
+  padding: 10px;
+  border-radius: 10px;
+  outline: none;
+  caret-color: auto;
+}
+#search::placeholder{ color: #6b7280; }
+
+/* Responsive */
+@media(max-width:920px){ .grid{ grid-template-columns:repeat(2,1fr); } }
+@media(max-width:600px){ .grid{ grid-template-columns:1fr; } #siteLogo{ height:64px; } .hero-overlay h2{ font-size:1.4rem; } }
+</style>
+</head>
+<body>
+<div class="bg-blob b1" aria-hidden="true"></div>
+<div class="bg-blob b2" aria-hidden="true"></div>
+
+<!-- Login -->
+<div id="loginOverlay" role="dialog" aria-modal="true">
+  <div class="loginCard">
+    <div class="login-header">
+      <div class="login-logo"><img src="logo.png" alt="Logo" style="width:72%;height:auto"></div>
+      <div>
+        <div class="login-title">ASS-Projekt — Zugang</div>
+        <div style="color:var(--muted)">Bitte Passwort eingeben.</div>
+      </div>
+    </div>
+    <form id="loginForm">
+      <div class="form-row">
+        <input id="pw" type="password" placeholder="Passwort">
+        <button type="button" id="togglePw" class="action-btn" aria-pressed="false">Anzeigen</button>
+      </div>
+      <button class="btn" type="submit">Einloggen</button>
+      <div id="errMsg" class="err"></div>
+    </form>
+  </div>
+</div>
+
+<!-- Hauptinhalt -->
+<div class="container" id="mainApp" aria-hidden="true">
+  <header class="header">
+    <img id="siteLogo" alt="Projekt-Logo" data-src="logo.png" loading="lazy">
+    <div class="title">ASS-Projekt — Alkoholsucht</div>
+    <div class="header-actions">
+      <button id="themeToggle" class="action-btn">Theme</button>
+      <button id="printBtn" class="action-btn">Drucken</button>
+      <button id="logoutBtn" class="action-btn">Abmelden</button>
+    </div>
+  </header>
+
+  <section class="hero-banner">
+    <img id="posterImg" alt="Plakat" data-src="plakat.png" loading="lazy">
+    <div class="hero-overlay">
+      <!-- Nur Buttons, keine Verdunkelung mehr -->
+      <div class="hero-actions">
+        <button id="downloadPoster" class="action-btn">Plakat herunterladen</button>
+        <button id="sharePoster" class="action-btn">Teilen</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-card">
+    <h2>Ressourcen & Informationen</h2>
+    <input id="search" class="search" placeholder="Suche Ressourcen..." style="margin-top:10px;width:100%;">
+    <div id="resources" class="grid">
+      <div class="card-small" data-type="facts"><h4>Was ist Alkoholsucht?</h4><p>Alkoholsucht ist eine chronische Erkrankung, bei der der Konsum von Alkohol außer Kontrolle gerät. Betroffene verspüren ein starkes Verlangen und trinken weiter, obwohl sie sich oder anderen schaden.
+
+Typische Symptome:
+
+Starkes Trinkverlangen
+
+Kontrollverlust
+
+Toleranzentwicklung
+
+Entzugserscheinungen
+
+Vernachlässigung von Alltag & Beziehungen.</p></div>
+      <div class="card-small" data-type="facts"><h4>Ursachen</h4><p>Biologisch: genetische Veranlagung, Veränderungen im Gehirn.
+Psychologisch: Stress, Depressionen, geringes Selbstwertgefühl.
+Sozial: Gruppendruck, familiäre Probleme, Trinkkultur in Deutschland..</p></div>
+      <div class="card-small" data-type="help"><h4>Hotline</h4><p>Telefonseelsorge: 0800 111 0 111 / 0800 111 0 222 (kostenlos, anonym).
+
+Sucht & Drogen Hotline: 01806 313031 (24 h erreichbar).
+
+Online: www.alkoholberatung.de | www.telefonseelsorge.de</p></div>
+      <div class="card-small" data-type="help"><h4>Therapieformen</h4><p>Ambulant: Beratung & Gesprächstherapie im Alltag.
+
+Stationär: Entgiftung & Reha in Klinik.
+
+Selbsthilfegruppen: z. B. Anonyme Alkoholiker, Blaues Kreuz..</p></div>
+      <div class="card-small" data-type="facts"><h4>Statistiken</h4><p>Ca. 1,6 Mio. Menschen sind alkoholabhängig.
+
+Rund 8,6 Mio. trinken in riskanten Mengen.
+
+Männer sind etwa doppelt so oft betroffen wie Frauen.
+
+Rückläufiger Trend bei Jugendlichen.
+
+Etwa 14.000 bis 15.000 Todesfälle pro Jahr werden direkt durch Alkoholkonsum verursacht (z. B. Leberzirrhose, Vergiftung).
+
+Insgesamt sterben über 40.000 Menschen jährlich an den Folgen von Alkoholmissbrauch (z. B. Krebs, Herz-Kreislauf-Erkrankungen, Unfälle).</p></div>
+      <div class="card-small" data-type="help"><h4>!!!Hinweis zur Seite!!!</h4><p>Diese Informationsseite wurde mit größter Sorgfalt erstellt, jedoch nicht professionell medizinisch oder therapeutisch geprüft. Die enthaltenen Angaben können Unvollständigkeiten oder sachliche Ungenauigkeiten enthalten. Manche Themen sind bewusst verkürzt oder vereinfacht dargestellt.
+
+Bei gesundheitlichen Fragen oder dem Verdacht auf eine Abhängigkeit sollte man sich an qualifizierte Fachstellen, Ärztinnen und Ärzte oder Suchtberatungsstellen wenden.
+
+Rückmeldungen und Verbesserungsvorschläge sind jederzeit willkommen, um die Inhalte künftig zu präzisieren und zu erweitern.</p></div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="acc-item">
+      <button class="acc-button">Wie erkenne ich eine Sucht?<span>▸</span></button>
+      <div class="acc-panel"><p>Kontrollverlust, Entzugserscheinungen, Vernachlässigung wichtiger Lebensbereiche.</p></div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-button">Wohin kann ich mich wenden?<span>▸</span></button>
+      <div class="acc-panel"><p>Beratungsstellen, Telefonhotlines und Online-Angebote bieten schnelle Hilfe Oben unter Hotline zu finden sind einige Beratungsstellen und hotlines.</p></div>
+    </div>
+  </div>
+
+  <footer>© ASS-Projekt — Schulprojekt Max p.</footer>
+</div>
+
+<script>
+const PASSWORD_HASH='e3fd641a190ff810e37687480e62a12b6bc753cc3ae9a71f71e7dd57fcf65095';
+const overlay=document.getElementById('loginOverlay');
+const mainApp=document.getElementById('mainApp');
+const loginForm=document.getElementById('loginForm');
+const pwInput=document.getElementById('pw');
+const err=document.getElementById('errMsg');
+const togglePw=document.getElementById('togglePw');
+const logoutBtn=document.getElementById('logoutBtn');
+const downloadPoster=document.getElementById('downloadPoster');
+const sharePoster=document.getElementById('sharePoster');
+const search=document.getElementById('search');
+const resources=document.getElementById('resources');
+const themeToggle=document.getElementById('themeToggle');
+const printBtn=document.getElementById('printBtn');
+
+function hex(buf){return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');}
+async function sha256(text){const enc=new TextEncoder();const h=await crypto.subtle.digest('SHA-256',enc.encode(text));return hex(h);}
+function showSite(){overlay.style.display='none';mainApp.style.display='block';mainApp.removeAttribute('aria-hidden');document.querySelectorAll('img[data-src]').forEach(i=>i.src=i.dataset.src);}
+function showOverlay(){overlay.style.display='flex';mainApp.style.display='none';mainApp.setAttribute('aria-hidden','true');pwInput.value='';pwInput.focus();}
+if(sessionStorage.getItem('ass_logged_in')==='1'){showSite();}
+togglePw.addEventListener('click',()=>{const isPwd=pwInput.type==='password';pwInput.type=isPwd?'text':'password';togglePw.textContent=isPwd?'Verbergen':'Anzeigen';});
+loginForm.addEventListener('submit',async e=>{e.preventDefault();const pw=pwInput.value||'';if(!pw){err.textContent='Bitte Passwort eingeben.';return;}const d=await sha256(pw);if(d===PASSWORD_HASH){sessionStorage.setItem('ass_logged_in','1');showSite();}else{err.textContent='Falsches Passwort.';pwInput.value='';}});
+logoutBtn.addEventListener('click',()=>{sessionStorage.removeItem('ass_logged_in');showOverlay();});
+downloadPoster.addEventListener('click',()=>{const url=document.getElementById('posterImg').dataset.src;window.open(url,'_blank');});
+sharePoster.addEventListener('click',async()=>{const url=document.getElementById('posterImg').dataset.src;if(navigator.share){await navigator.share({title:'Plakat ASS-Projekt',url});}else{prompt('Link zum Teilen:',url);}});
+search.addEventListener('input',()=>{const q=search.value.toLowerCase();Array.from(resources.children).forEach(card=>{const t=card.textContent.toLowerCase();card.style.display=t.includes(q)?'block':'none';});});
+document.querySelectorAll('.acc-button').forEach(b=>b.addEventListener('click',()=>{const p=b.nextElementSibling;const o=p.style.maxHeight&&p.style.maxHeight!=='0px';document.querySelectorAll('.acc-panel').forEach(x=>x.style.maxHeight=null);if(!o)p.style.maxHeight=p.scrollHeight+'px';}));
+let dark=true;themeToggle.addEventListener('click',()=>{dark=!dark;document.documentElement.style.setProperty('--card',dark?'#ffffff':'#0b1220');});
+printBtn.addEventListener('click',()=>window.print());
+pwInput.focus();
+</script>
+</body>
+</html>
